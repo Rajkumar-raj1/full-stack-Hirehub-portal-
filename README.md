@@ -5,6 +5,19 @@ Job seekers can create profiles, upload resumes, search jobs, and apply for posi
 
 ---
 
+
+## Live Demo
+
+🚀 Frontend (Live App):  
+https://full-stack-hirehub-portal.vercel.app
+
+⚙️ Backend API:  
+https://hirehub-backend-38px.onrender.com/api/v1
+
+
+---
+
+
 ## Features
 
 ### Job Seeker Features
