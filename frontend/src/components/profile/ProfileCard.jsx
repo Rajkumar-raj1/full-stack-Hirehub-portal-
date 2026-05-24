@@ -171,45 +171,65 @@ const ProfileCard = ({
     }
   };
 
-  const handleProfilePhotoChange =
-    async (e) => {
-      const file =
-        e.target.files[0];
-      if (!file) return;
+ const handleProfilePhotoChange = async (e) => {
+  if (readOnly) return;
 
-      const formData =
-        new FormData();
-      formData.append(
-        "profilePhoto",
-        file
-      );
+  try {
+    const file = e.target.files[0];
+    if (!file) return;
 
-      const data =
-        await updateProfilePhoto(
-          formData
-        );
-      setUser(data?.data);
-    };
+    const formData = new FormData();
+    formData.append("profilePhoto", file);
 
-  const handleResumeChange =
-    async (e) => {
-      const file =
-        e.target.files[0];
-      if (!file) return;
+    const data = await updateProfilePhoto(formData);
 
-      const formData =
-        new FormData();
-      formData.append(
-        "resume",
-        file
-      );
+    setUser(data?.data);
 
-      const data =
-        await uploadResume(
-          formData
-        );
-      setUser(data?.data);
-    };
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data?.data)
+    );
+
+    alert("Profile photo updated successfully");
+  } catch (error) {
+    console.log(error);
+
+    alert(
+      error?.response?.data?.message ||
+        "Profile photo update failed"
+    );
+  }
+};
+
+ const handleResumeChange = async (e) => {
+  if (readOnly) return;
+
+  try {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    const data = await uploadResume(formData);
+
+    setUser(data?.data);
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data?.data)
+    );
+
+    alert("Resume updated successfully");
+  } catch (error) {
+    console.log(error);
+
+    alert(
+      error?.response?.data?.message ||
+        "Resume update failed"
+    );
+  }
+};
 
 return (
   <div
