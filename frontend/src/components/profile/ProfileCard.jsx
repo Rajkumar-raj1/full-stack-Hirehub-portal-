@@ -70,12 +70,7 @@ const EditableRow = ({
             />
           )}
 
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-            }}
-          >
+          <div style={{ display: "flex", gap: "8px" }}>
             <button
               type="button"
               onClick={saveField}
@@ -150,15 +145,19 @@ const ProfileCard = ({
 }) => {
   const [editingField, setEditingField] =
     useState(null);
-
   const [value, setValue] =
     useState("");
-
   const [loading, setLoading] =
     useState(false);
 
-  const [fileLoading, setFileLoading] =
+  const [photoLoading, setPhotoLoading] =
     useState(false);
+  const [resumeLoading, setResumeLoading] =
+    useState(false);
+
+  const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    user?.fullName || "User"
+  )}&background=2563eb&color=fff&size=150`;
 
   const updateUserState = (updatedUser) => {
     setUser(updatedUser);
@@ -222,22 +221,19 @@ const ProfileCard = ({
       if (readOnly) return;
 
       try {
-        setFileLoading(true);
+        setPhotoLoading(true);
 
         const file = e.target.files?.[0];
         if (!file) return;
 
         const formData = new FormData();
-
         formData.append(
           "profilePhoto",
           file
         );
 
         const data =
-          await updateProfilePhoto(
-            formData
-          );
+          await updateProfilePhoto(formData);
 
         updateUserState(data?.data);
 
@@ -252,7 +248,7 @@ const ProfileCard = ({
             "Profile photo update failed"
         );
       } finally {
-        setFileLoading(false);
+        setPhotoLoading(false);
         e.target.value = "";
       }
     };
@@ -262,13 +258,12 @@ const ProfileCard = ({
       if (readOnly) return;
 
       try {
-        setFileLoading(true);
+        setResumeLoading(true);
 
         const file = e.target.files?.[0];
         if (!file) return;
 
         const formData = new FormData();
-
         formData.append("resume", file);
 
         const data =
@@ -276,9 +271,7 @@ const ProfileCard = ({
 
         updateUserState(data?.data);
 
-        alert(
-          "Resume updated successfully"
-        );
+        alert("Resume updated successfully");
       } catch (error) {
         console.log(error);
 
@@ -287,7 +280,7 @@ const ProfileCard = ({
             "Resume update failed"
         );
       } finally {
-        setFileLoading(false);
+        setResumeLoading(false);
         e.target.value = "";
       }
     };
@@ -325,7 +318,7 @@ const ProfileCard = ({
           <img
             src={
               user?.profilePhoto?.url ||
-              "https://via.placeholder.com/150"
+              defaultAvatar
             }
             alt="profile"
             style={{
@@ -343,18 +336,18 @@ const ProfileCard = ({
               style={{
                 padding: "8px 12px",
                 backgroundColor:
-                  fileLoading
+                  photoLoading
                     ? "#9ca3af"
                     : "#2563eb",
                 color: "#fff",
                 borderRadius: "6px",
-                cursor: fileLoading
+                cursor: photoLoading
                   ? "not-allowed"
                   : "pointer",
                 display: "inline-block",
               }}
             >
-              {fileLoading
+              {photoLoading
                 ? "Uploading..."
                 : "Update Photo"}
 
@@ -364,7 +357,7 @@ const ProfileCard = ({
                 onChange={
                   handleProfilePhotoChange
                 }
-                disabled={fileLoading}
+                disabled={photoLoading}
                 style={{
                   display: "none",
                 }}
@@ -477,19 +470,19 @@ const ProfileCard = ({
                     padding:
                       "8px 12px",
                     backgroundColor:
-                      fileLoading
+                      resumeLoading
                         ? "#9ca3af"
                         : "#10b981",
                     color: "#fff",
                     borderRadius: "6px",
-                    cursor: fileLoading
+                    cursor: resumeLoading
                       ? "not-allowed"
                       : "pointer",
                     display:
                       "inline-block",
                   }}
                 >
-                  {fileLoading
+                  {resumeLoading
                     ? "Uploading..."
                     : user?.resume?.url
                     ? "Update Resume"
@@ -501,7 +494,7 @@ const ProfileCard = ({
                     onChange={
                       handleResumeChange
                     }
-                    disabled={fileLoading}
+                    disabled={resumeLoading}
                     style={{
                       display: "none",
                     }}
